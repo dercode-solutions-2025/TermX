@@ -15,3 +15,17 @@ draw cir | 0&0 | 0&0&0 | 50&50
 ```
 The above code draws a white circle at 0,0 that is 50 pixels tall and 50 pixels wide.
 The original version had Fortran-esque syntax. At the moment, the TermX team is very close to implementing if/else statements, which can allow bootstrapping for TermX.
+
+# Q&A
+
+Q: How do I use TermX?
+A: Download the GitHub package, and choose a file. There are 4 versions of TermX:
+1. TermPY.py
+2. VisualTermPY.py
+3. TermC.c
+4. VisualTermC.c
+
+So far, TermC and VisualTermC are still in development.
+
+Q: Is TermX compiled or interpreted?
+A: It is interpreted, and the interpreter was built on Python and C.
