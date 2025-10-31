@@ -1,41 +1,29 @@
 import turtle
+
 turtle.hideturtle()
 screen = turtle.Screen()
+turtle.speed(100)
 
-def draw_circle(radius, x, y, color):
+def draw_circle(x, y, color, width, height):
     t = turtle.Turtle()
     t.hideturtle()
     t.penup()
-    t.goto(x, y)
+    t.goto(x, y - height / 2)  # Move so circle is centered
     t.pendown()
     t.color(color)
     t.begin_fill()
-    t.circle(radius)
+    t.circle(max(width, height) / 2)
     t.end_fill()
 
-def draw_rectangle(width, height, x, y, color):
+def draw_rectangle(x, y, color, width, height):
     t = turtle.Turtle()
     t.hideturtle()
     t.penup()
-    t.goto(x, y)
+    t.goto(x - width / 2, y + height / 2)  # Center rectangle
     t.pendown()
     t.color(color)
     t.begin_fill()
     for _ in range(2):
-        t.forward(width)
-        t.right(90)
-        t.forward(height)
-        t.right(90)
-    t.end_fill()
-def draw_square(width, height, x, y, color):
-    t = turtle.Turtle()
-    t.hideturtle()
-    t.penup()
-    t.goto(x, y)
-    t.pendown()
-    t.color(color)
-    t.begin_fill()
-    for _ in range(4):
         t.forward(width)
         t.right(90)
         t.forward(height)
@@ -46,7 +34,7 @@ def display_text(text):
     t = turtle.Turtle()
     t.hideturtle()
     t.penup()
-    t.goto(0, 0)
+    t.goto(0, 100)
     t.write(text, font=("Verdana", 16, "normal"))
 
 while True:
@@ -54,68 +42,31 @@ while True:
     if line is None or line.lower() == 'quit':
         break
 
-    if line.startswith("DISPTEXT "):
-        text = line.replace("DISPTEXT ", "", 1)
+    if line.startswith("disptext | "):
+        text = line.replace("disptext | ", "")
         display_text(text)
 
-    elif line.startswith("DRAW "):
-        line = line.replace("DRAW ", "", 1)
-        if "CIR" in line:
-            parts = line.split('|')
-            if len(parts) >= 5:
-                try:
-                    radius = float(parts[1])
-                except ValueError:
-                    radius = 50
-                try:
-                    x = float(parts[2])
-                    y = float(parts[3])
-                except ValueError:
-                    x, y = 0, 0
-                rgb = parts[4].split(',')
-                if len(rgb) == 3:
-                    try:
-                        r = int(rgb[0])
-                        g = int(rgb[1])
-                        b = int(rgb[2])
-                        color = (r/255, g/255, b/255)
-                    except ValueError:
-                        color = (0, 0, 0)
-                else:
-                    color = (0, 0, 0)
-                draw_circle(radius, x, y, color)
+    elif line.startswith("draw "):
+        line = line.replace("draw ", "")
+        parts = line.split(" | ")
 
-        elif "RECT" in line:
-            parts = line.split('|')
-            if len(parts) >= 5:
-                size_str = parts[1]
-                if '!' in size_str:
-                    width_str, height_str = size_str.split('!')
-                    try:
-                        width = float(width_str)
-                    except ValueError:
-                        width = 100
-                    try:
-                        height = float(height_str)
-                    except ValueError:
-                        height = 50
-                else:
-                    width = 100
-                    height = 50
-                try:
-                    x = float(parts[2])
-                    y = float(parts[3])
-                except ValueError:
-                    x, y = 0, 0
-                rgb = parts[4].split(',')
-                if len(rgb) == 3:
-                    try:
-                        r = int(rgb[0])
-                        g = int(rgb[1])
-                        b = int(rgb[2])
-                        color = (r/255, g/255, b/255)
-                    except ValueError:
-                        color = (0, 0, 0)
-                else:
-                    color = (0, 0, 0)
-                draw_rectangle(width, height, x, y, color)
+        if len(parts) >= 4:
+            shape = parts[0]
+            try:
+                x, y = map(float, parts[1].split('&'))
+            except ValueError:
+                x, y = 0, 0
+            try:
+                r, g, b = map(int, parts[2].split('&'))
+                color = (r / 255, g / 255, b / 255)
+            except ValueError:
+                color = (1, 1, 1)
+            try:
+                width, height = map(float, parts[3].split('&'))
+            except ValueError:
+                width, height = 50, 50
+
+            if shape == "cir":
+                draw_circle(x, y, color, width, height)
+            elif shape == "rect":
+                draw_rectangle(x, y, color, width, height)
